@@ -1,0 +1,45 @@
+---
+title: "STAT 184 Project"
+author: "ProjectTeam8-4"
+date: "April 18, 2021"
+output: html_notebook
+---
+
+#### Load Packages
+```{r}
+library(tidyverse)
+library(dplyr)
+```
+
+#### Read in Data and Convert Stat Files to Data Frames
+```{r}
+# read in Memorial Fantasy data
+Memorial_Fantasy <- read.csv("Memorial_Fantasy.csv", sep=',', header = F)
+
+Memorial_Fantasy <- Memorial_Fantasy %>%
+  slice(-c(1)) # remove first row of Memorial Fantasy
+
+names(Memorial_Fantasy) <- c("Player", "Salary", "FPTS", "Tournament", "Par")
+# assign variable names to the 5 columns
+
+# read in Memorial Stats data
+Memorial_Stats <- read.csv("Memorial_Stats.txt", sep=',', header = F)
+
+Memorial_Stats <- Memorial_Stats %>%
+  slice(-c(1)) # remove first row of Memorial Stats
+  
+Memorial_Stats <- as.data.frame(matrix(Memorial_Stats$V1, ncol=9, byrow=T)) # wrangle data into data table
+
+names(Memorial_Stats) <- c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total")
+# assign variable names to the 9 columns
+```
+
+#### Join Fantasy and Statistics to Create One Data Frame for Each of Three Tournaments
+```{r}
+Memorial <- full_join(Memorial_Stats, Memorial_Fantasy, by = "Player")
+```
+
+#### Combine the Three Tournament Data Frames to Final Data Frame 
+```{r}
+
+```
