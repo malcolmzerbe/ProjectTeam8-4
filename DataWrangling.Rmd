@@ -7,7 +7,7 @@ output: html_notebook
 
 #### Load Packages
 ```{r}
-library(tidyverse)
+library(tidyverse) 
 library(dplyr)
 ```
 
@@ -34,7 +34,17 @@ Memorial_Stats <- as.data.frame(matrix(Memorial_Stats$V1, ncol=9, byrow=T)) # wr
 names(Memorial_Stats) <- c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total")
 # assign variable names to the 9 columns
 
-### PGA
+### PGA INFORMATION
+PGA_Fantasy <- read.csv("PGA_Fantasy.csv", sep = ',', header = FALSE)  %>% #read in PGA Fantasy data
+  slice(-c(1))  #remove the first row 
+
+names(PGA_Fantasy) <- c("Player", "Salary", "FPTS", "Tournament", "Par")  #assign variable names to 5 columns in PGA Fantasy 
+
+PGA_Stats_read <- read.csv("PGA_Stats.txt", sep = ",", header = FALSE) %>% #read in PGA Stats data
+  slice(-c(1)) #remove the first row 
+  
+PGA_Stats <- as.data.frame(matrix(PGA_Stats_read$V1, ncol = 9, byrow = TRUE)) #place data in table by wrangling data
+names(PGA_Stats) <- c('Position', 'Player', 'Score', 'Putt', 'ARG', 'APP', 'OTT', 'T2G', 'Total') #assign variable names to 9 columns in PGA Stats
 
 ### Schwab
 ```
@@ -44,11 +54,30 @@ names(Memorial_Stats) <- c("Position", "Player", "Score", "Putt", "ARG", "App", 
 Memorial <- full_join(Memorial_Stats, Memorial_Fantasy, by = "Player")
 
 PGA <-
+  PGA_Stats %>%
+  full_join(PGA_Fantasy, by = "Player") #join PGA Stats and PGA Fantasy into one table by the variable Player
   
 Schwab <-
 ```
 
 #### Combine the Three Tournament Data Frames to Final Data Frame 
 ```{r}
+rank <-   #this I believe is the number from the position column 
+  PGA %>%
+  select(Position)%>%
+  filter(grepl("[1-9]", Position, ignore.case = TRUE)) %>% #do i need 0-9? 
+  mutate(rank = rank(Position))  #add something to just get the number in the position...does it need to show if CUT, etc?? 
+
+top10 <-
+#top ten...where they are between T1-T10 = YES
+
+PGA_Championship <-
+  PGA %>% #change to data frame where we combine all 3 above...change this in the above one too
+  mutate(PGA_Championship = Score)
+
+avg <- 
+  #avg...take three scores from memorial and other two and take avg/mean
 
 ```
+
+
