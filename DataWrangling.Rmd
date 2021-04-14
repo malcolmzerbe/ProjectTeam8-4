@@ -33,7 +33,9 @@ Memorial_Stats <- as.data.frame(matrix(Memorial_Stats$V1, ncol=9, byrow=T)) # wr
 
 names(Memorial_Stats) <- c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total")
 # assign variable names to the 9 columns
+```
 
+```{r}
 ### PGA INFORMATION
 PGA_Fantasy <- read.csv("PGA_Fantasy.csv", sep = ',', header = FALSE)  %>% #read in PGA Fantasy data
   slice(-c(1))  #remove the first row 
