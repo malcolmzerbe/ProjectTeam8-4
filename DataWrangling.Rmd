@@ -13,6 +13,7 @@ library(dplyr)
 
 #### Read in Data and Convert Stat Files to Data Frames
 ```{r}
+### Memorial
 # read in Memorial Fantasy data
 Memorial_Fantasy <- read.csv("Memorial_Fantasy.csv", sep=',', header = F)
 
@@ -32,11 +33,19 @@ Memorial_Stats <- as.data.frame(matrix(Memorial_Stats$V1, ncol=9, byrow=T)) # wr
 
 names(Memorial_Stats) <- c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total")
 # assign variable names to the 9 columns
+
+### PGA
+
+### Schwab
 ```
 
 #### Join Fantasy and Statistics to Create One Data Frame for Each of Three Tournaments
 ```{r}
 Memorial <- full_join(Memorial_Stats, Memorial_Fantasy, by = "Player")
+
+PGA <-
+  
+Schwab <-
 ```
 
 #### Combine the Three Tournament Data Frames to Final Data Frame 
