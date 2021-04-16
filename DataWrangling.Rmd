@@ -27,8 +27,6 @@ Memorial_Stats <- Memorial_Stats %>%
 
 Memorial_Stats <- subset(Memorial_Stats, select = -id)
 Memorial_Stats <- Memorial_Stats[, c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total")] # reorganize columns
-
-
 ```
 
 #### Join Fantasy and Statistics to Create One Data Frame for Each of Three Tournaments
