@@ -27,6 +27,33 @@ Memorial_Stats <- Memorial_Stats %>%
 
 Memorial_Stats <- subset(Memorial_Stats, select = -id)
 Memorial_Stats <- Memorial_Stats[, c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total")] # reorganize columns
+
+#Bring in Schwab Fantasy
+Schwab_Fantasy <- 
+  read.csv("Schwab_Fantasy.csv")
+
+names(Schwab_Fantasy) <- 
+  c("Player", "Salary", "FPTS", "Tournament", "Par")
+
+#Bring in Schwab Stats
+Schwab_Stats <- 
+  read.delim("Schwab_Stats.txt")
+
+Schwab_Stats <-
+  data.frame(column = c(Schwab_Stats[,]))
+
+#Long to wide 
+Schwab_Stats <- 
+  Schwab_Stats %>%
+  mutate(key = rep(c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total"), n()/9), id = cumsum(key == "Position")) %>%
+  spread(key, column)
+
+Schwab_Stats <-
+  subset(Schwab_Stats, select = -id)
+
+Schwab_Stats <-
+  Schwab_Stats[, c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total")]
+
 ```
 
 #### Join Fantasy and Statistics to Create One Data Frame for Each of Three Tournaments
@@ -35,7 +62,7 @@ Memorial <- full_join(Memorial_Stats, Memorial_Fantasy, by = "Player")
 
 PGA <-
   
-Schwab <-
+Schwab <- full_join(Schwab_Stats, Schwab_Fantasy, by = "Player")
 
 ```
 
