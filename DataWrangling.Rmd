@@ -13,30 +13,22 @@ library(dplyr)
 
 #### Read in Data and Convert Stat Files to Data Frames
 ```{r}
-### Memorial
-# read in Memorial Fantasy data
-Memorial_Fantasy <- read.csv("Memorial_Fantasy.csv", sep=',', header = F)
+Memorial_Fantasy <- read.csv("Memorial_Fantasy.csv") # read in Memorial_Fantasy data
 
-Memorial_Fantasy <- Memorial_Fantasy %>%
-  slice(-c(1)) # remove first row of Memorial Fantasy
+names(Memorial_Fantasy) <- c("Player", "Salary", "FPTS", "Tournament", "Par") # change Name variable to Player
 
-names(Memorial_Fantasy) <- c("Player", "Salary", "FPTS", "Tournament", "Par")
-# assign variable names to the 5 columns
+Memorial_Stats <- read.csv("Memorial_Stats.txt") # read in Memorial_Stats data
 
-# read in Memorial Stats data
-Memorial_Stats <- read.csv("Memorial_Stats.txt", sep=',', header = F)
+Memorial_Stats <- data.frame(column = c(Memorial_Stats[,]))
 
 Memorial_Stats <- Memorial_Stats %>%
-  slice(-c(1)) # remove first row of Memorial Stats
-  
-Memorial_Stats <- as.data.frame(matrix(Memorial_Stats$V1, ncol=9, byrow=T)) # wrangle data into data table
+  mutate(key = rep(c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total"), n()/9), id = cumsum(key == "Position")) %>%
+  spread(key, column) # long to wide transformation; transpose every 9 rows of Memorial_Stats into a column
 
-names(Memorial_Stats) <- c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total")
-# assign variable names to the 9 columns
+Memorial_Stats <- subset(Memorial_Stats, select = -id)
+Memorial_Stats <- Memorial_Stats[, c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total")] # reorganize columns
 
-### PGA
 
-### Schwab
 ```
 
 #### Join Fantasy and Statistics to Create One Data Frame for Each of Three Tournaments
