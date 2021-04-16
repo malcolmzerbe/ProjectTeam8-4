@@ -17,7 +17,7 @@ Memorial_Fantasy <- read.csv("Memorial_Fantasy.csv") # read in Memorial_Fantasy 
 
 names(Memorial_Fantasy) <- c("Player", "Salary", "FPTS", "Tournament", "Par") # change Name variable to Player
 
-Memorial_Stats <- read.csv("Memorial_Stats.txt") # read in Memorial_Stats data
+Memorial_Stats <- read.delim("Memorial_Stats.txt") # read in Memorial_Stats data
 
 Memorial_Stats <- data.frame(column = c(Memorial_Stats[,]))
 
