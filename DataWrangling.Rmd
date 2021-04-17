@@ -13,40 +13,73 @@ library(dplyr)
 
 #### Read in Data and Convert Stat Files to Data Frames
 ```{r}
-### Memorial
-# read in Memorial Fantasy data
-Memorial_Fantasy <- read.csv("Memorial_Fantasy.csv", sep=',', header = F)
+Memorial_Fantasy <- read.csv("Memorial_Fantasy.csv") # read in Memorial_Fantasy data
 
-Memorial_Fantasy <- Memorial_Fantasy %>%
-  slice(-c(1)) # remove first row of Memorial Fantasy
+names(Memorial_Fantasy) <- c("Player", "Salary", "FPTS", "Tournament", "Par") # change Name variable to Player
 
-names(Memorial_Fantasy) <- c("Player", "Salary", "FPTS", "Tournament", "Par")
-# assign variable names to the 5 columns
+Memorial_Stats <- read.delim("Memorial_Stats.txt") # read in Memorial_Stats data
 
-# read in Memorial Stats data
-Memorial_Stats <- read.csv("Memorial_Stats.txt", sep=',', header = F)
+Memorial_Stats <- data.frame(column = c(Memorial_Stats[,]))
 
 Memorial_Stats <- Memorial_Stats %>%
-  slice(-c(1)) # remove first row of Memorial Stats
-  
-Memorial_Stats <- as.data.frame(matrix(Memorial_Stats$V1, ncol=9, byrow=T)) # wrangle data into data table
+  mutate(key = rep(c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total"), n()/9), id = cumsum(key == "Position")) %>%
+  spread(key, column) # long to wide transformation; transpose every 9 rows of Memorial_Stats into a column
 
-names(Memorial_Stats) <- c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total")
-# assign variable names to the 9 columns
+Memorial_Stats <- subset(Memorial_Stats, select = -id)
+Memorial_Stats <- Memorial_Stats[, c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total")] # reorganize columns
 
-### PGA INFORMATION
-PGA_Fantasy <- read.csv("PGA_Fantasy.csv", sep = ',', header = FALSE)  %>% #read in PGA Fantasy data
-  slice(-c(1))  #remove the first row 
+#Bring in Schwab Fantasy
+Schwab_Fantasy <- 
+  read.csv("Schwab_Fantasy.csv")
 
-names(PGA_Fantasy) <- c("Player", "Salary", "FPTS", "Tournament", "Par")  #assign variable names to 5 columns in PGA Fantasy 
+names(Schwab_Fantasy) <- 
+  c("Player", "Salary", "FPTS", "Tournament", "Par")
 
-PGA_Stats_read <- read.csv("PGA_Stats.txt", sep = ",", header = FALSE) %>% #read in PGA Stats data
-  slice(-c(1)) #remove the first row 
-  
-PGA_Stats <- as.data.frame(matrix(PGA_Stats_read$V1, ncol = 9, byrow = TRUE)) #place data in table by wrangling data
-names(PGA_Stats) <- c('Position', 'Player', 'Score', 'Putt', 'ARG', 'APP', 'OTT', 'T2G', 'Total') #assign variable names to 9 columns in PGA Stats
+#Bring in Schwab Stats
+Schwab_Stats <- 
+  read.delim("Schwab_Stats.txt")
 
-### Schwab
+Schwab_Stats <-
+  data.frame(column = c(Schwab_Stats[,]))
+
+#Long to wide 
+Schwab_Stats <- 
+  Schwab_Stats %>%
+  mutate(key = rep(c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total"), n()/9), id = cumsum(key == "Position")) %>%
+  spread(key, column)
+
+Schwab_Stats <-
+  subset(Schwab_Stats, select = -id)
+
+Schwab_Stats <-
+  Schwab_Stats[, c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total")]
+
+#PGA Data 
+PGA_Fantasy <-
+  read.csv("PGA_Fantasy.csv") #read in PGA Fantasy data
+
+names(PGA_Fantasy) <-
+    c("Player", "Salary", "FPTS", "Tournament", "Par") #set variable names for PGA Fantasy
+
+PGA_Stats <-
+  read.delim("PGA_Stats.txt") #read in PGA Stats data
+
+PGA_Stats <-
+  data.frame(column = c(PGA_Stats[,])) #create data frame
+
+#PGA stats long to wide
+PGA_Stats <- 
+  PGA_Stats %>%
+  mutate(key = rep(c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total"), n()/9), id = cumsum(key == "Position")) %>% 
+  spread(key, column) 
+
+PGA_Stats <-
+  subset(PGA_Stats, select = -id)
+
+PGA_Stats <-
+  PGA_Stats[, c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total")] #reorganize columns of PGA data
+
+
 ```
 
 #### Join Fantasy and Statistics to Create One Data Frame for Each of Three Tournaments
@@ -54,30 +87,14 @@ names(PGA_Stats) <- c('Position', 'Player', 'Score', 'Putt', 'ARG', 'APP', 'OTT'
 Memorial <- full_join(Memorial_Stats, Memorial_Fantasy, by = "Player")
 
 PGA <-
-  PGA_Stats %>%
-  full_join(PGA_Fantasy, by = "Player") #join PGA Stats and PGA Fantasy into one table by the variable Player
   
-Schwab <-
+Schwab <- full_join(Schwab_Stats, Schwab_Fantasy, by = "Player")
 ```
 
 #### Combine the Three Tournament Data Frames to Final Data Frame 
 ```{r}
-rank <-   #this I believe is the number from the position column 
-  PGA %>%
-  select(Position)%>%
-  filter(grepl("[1-9]", Position, ignore.case = TRUE)) %>% #do i need 0-9? 
-  mutate(rank = rank(Position))  #add something to just get the number in the position...does it need to show if CUT, etc?? 
-
-top10 <-
-#top ten...where they are between T1-T10 = YES
-
-PGA_Championship <-
-  PGA %>% #change to data frame where we combine all 3 above...change this in the above one too
-  mutate(PGA_Championship = Score)
-
-avg <- 
-  #avg...take three scores from memorial and other two and take avg/mean
 
 ```
+
 
 
