@@ -92,16 +92,13 @@ Schwab <- full_join(Schwab_Stats, Schwab_Fantasy, by = "Player")
 
 #### Combine the Three Tournament Data Frames to Final Data Frame 
 ```{r}
-M_P_S <-
+All_M_P_S <-
   rbind(Memorial, PGA, Schwab) #stack the 3 data frames together
 
 Complete_M_P_S <-
   All_M_P_S[complete.cases(All_M_P_S[1:9]),] %>%#removes 4 rows that have NA in the first 9 variables from the stat data 
   #replace(Score, Score == "E", 0)
-  mutate(Score = ifelse(as.character(Score) == "E",0, as.character(Score))) %>%#replace score E with 0 
-  mutate(PGA_Championship = Score)
-
-
+  mutate(Score = ifelse(as.character(Score) == "E",0, as.character(Score)))  #%>%#replace score E with 0 
 
 top10 <- #need to fix a little still...getting T13 etc
   Complete_M_P_S %>%
@@ -109,15 +106,21 @@ top10 <- #need to fix a little still...getting T13 etc
 #mutate(top10...)
 
 
-PGA_Championship <-
+#this gets the 3 Variables of Memorial, Charles Schwab, PGA Championship
+PGA_M_CS_Score <-
   Complete_M_P_S %>%
-  mutate(PGA_Championship = Score)
+  group_by(Player) %>%
+  select(Player, Score, Tournament) 
+
+PGA_M_CS_Score <-
+  pivot_wider(PGA_M_CS_Score, names_from = Tournament, values_from = Score)
+
+Join <-
+  Complete_M_P_S %>%
+  left_join(PGA_M_CS_Score, by = "Player")
 
 
 
-
-
-  
 ```
 
 
