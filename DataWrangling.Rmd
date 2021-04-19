@@ -100,16 +100,27 @@ Complete_M_P_S <-
   #replace(Score, Score == "E", 0)
   mutate(Score = ifelse(as.character(Score) == "E",0, as.character(Score)))  #%>%#replace score E with 0 
 
-#how I got top10 info......WE CAN PUT THIS ALL TOGETHER INTO ONE DATA FRAME IF U GUYS WANT 
-top10 <- 
+#Top10 variable......WE CAN PUT THIS ALL TOGETHER INTO ONE DATA FRAME IF U GUYS WANT 
+Top10 <- 
   Complete_M_P_S %>%
   select(Position, Player, Tournament) %>%
   mutate(top10= if_else(grepl("^[1-9]$|10|^T[1-9]$|T10",Position),"Yes", "No"))
 
 #join the cobined 3 data frames to the top10 
-top10Join <-
+Top10Join <-
   Complete_M_P_S%>%
-  left_join(top10, by = c("Player", "Position", "Tournament"))
+  left_join(Top10, by = c("Player", "Position", "Tournament"))
+
+#Made cut variable 
+MadeCut <-
+  Complete_M_P_S%>%
+  select(Position,Player, Tournament)%>%
+  mutate(MadeCut = if_else(grepl("CUT", Position),"No","Yes"))
+
+#Made Cut joined with top10 
+MadeCutJoin <-
+  Top10Join%>%
+  left_join(MadeCut, by = c("Player", "Position", "Tournament"))
 
 #this gets the 3 Variables of Memorial, Charles Schwab, PGA Championship
 PGA_M_CS_Score <-
@@ -122,7 +133,7 @@ PGA_M_CS_Score <-
 
 #join the top10 and the Scores
 Join <-
-  top10Join %>%
+  MadeCutJoin %>%
   left_join(PGA_M_CS_Score, by = "Player")
 
 ```
