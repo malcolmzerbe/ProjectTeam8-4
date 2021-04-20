@@ -71,52 +71,6 @@ Schwab <- full_join(Schwab_Stats, Schwab_Fantasy, by = "Player")
 
 #### Combine the Three Tournament Data Frames to Final Data Frame 
 ```{r}
-All_M_P_S <-
-  rbind(Memorial, PGA, Schwab) #stack the 3 data frames together
-
-Complete_M_P_S <-
-  All_M_P_S[complete.cases(All_M_P_S[1:9]),] %>%#removes 4 rows that have NA in the first 9 variables from the stat data 
-  #replace(Score, Score == "E", 0)
-  mutate(Score = ifelse(as.character(Score) == "E",0, as.character(Score)))  #%>%#replace score E with 0 
-
-#Top10 variable......WE CAN PUT THIS ALL TOGETHER INTO ONE DATA FRAME IF U GUYS WANT 
-Top10 <- 
-  Complete_M_P_S %>%
-  select(Position, Player, Tournament) %>%
-  mutate(top10= if_else(grepl("^[1-9]$|10|^T[1-9]$|T10",Position),"Yes", "No"))
-
-#join the cobined 3 data frames to the top10 
-Top10Join <-
-  Complete_M_P_S%>%
-  left_join(Top10, by = c("Player", "Position", "Tournament"))
-
-#Made cut variable 
-MadeCut <-
-  Complete_M_P_S%>%
-  select(Position,Player, Tournament)%>%
-  mutate(MadeCut = if_else(grepl("CUT", Position),"No","Yes"))
-
-#Made Cut joined with top10 
-MadeCutJoin <-
-  Top10Join%>%
-  left_join(MadeCut, by = c("Player", "Position", "Tournament"))
-
-#this gets the 3 Variables of Memorial, Charles Schwab, PGA Championship
-PGA_M_CS_Score <-
-  Complete_M_P_S %>%
-  group_by(Player) %>%
-  select(Player, Score, Tournament) 
-
-PGA_M_CS_Score <-
-  pivot_wider(PGA_M_CS_Score, names_from = Tournament, values_from = Score)
-
-#join the top10 and the Scores
-Join <-
-  MadeCutJoin %>%
-  left_join(PGA_M_CS_Score, by = "Player")
-```
-
-```{r}
 Mem_PGA_Sch <- rbind(Memorial, PGA, Schwab) # stack the 3 data frames together
 
 Mem_PGA_Sch <- Mem_PGA_Sch[complete.cases(Mem_PGA_Sch[1:9]),] %>% # removes 4 rows with NA
@@ -143,8 +97,4 @@ Mem_PGA_Sch <- Mem_PGA_Sch %>%
   mutate(SalaryRange = case_when(grepl("6[0-9]{3}", Salary) ~ "6000s", grepl("7[0-9]{3}", Salary) ~ "7000s", grepl("8[0-9]{3}", Salary) ~ "8000s",grepl("9[0-9]{3}", Salary) ~ "9000s",grepl("1[0-9]{4}", Salary) ~ "10000s")) # add SalaryRange variable
 
 Mem_PGA_Sch <- Mem_PGA_Sch[, c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total", "Salary", "FPTS", "Tournament", "Par", "top10", "MadeCut", "SalaryRange", "Charles Schwab", "Memorial", "PGA Championship")] # reorganize columns
-  
 ```
-
-  
-
