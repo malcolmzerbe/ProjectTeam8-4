@@ -1,0 +1,100 @@
+---
+title: "STAT 184 Project"
+author: "ProjectTeam8-4"
+date: "April 20, 2021"
+output: html_notebook
+---
+
+#### Load Packages
+```{r}
+library(tidyverse) 
+library(dplyr)
+```
+
+#### Read in Data and Convert Stat Files to Data Frames
+```{r}
+Memorial_Fantasy <- read.csv("Memorial_Fantasy.csv") # read in Memorial_Fantasy data
+
+names(Memorial_Fantasy) <- c("Player", "Salary", "FPTS", "Tournament", "Par") # change Name variable to Player
+
+Memorial_Stats <- read.delim("Memorial_Stats.txt") # read in Memorial_Stats data
+
+Memorial_Stats <- data.frame(column = c(Memorial_Stats[,]))
+
+Memorial_Stats <- Memorial_Stats %>%
+  mutate(key = rep(c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total"), n()/9), id = cumsum(key == "Position")) %>%
+  spread(key, column) # long to wide transformation; transpose every 9 rows of Memorial_Stats into a column
+
+Memorial_Stats <- subset(Memorial_Stats, select = -id)
+Memorial_Stats <- Memorial_Stats[, c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total")] # reorganize columns
+
+#Bring in Schwab Fantasy
+Schwab_Fantasy <- read.csv("Schwab_Fantasy.csv") # read in Schwab_Fantasy data
+
+names(Schwab_Fantasy) <- c("Player", "Salary", "FPTS", "Tournament", "Par") # change Name variable to Player
+
+Schwab_Stats <- read.delim("Schwab_Stats.txt") # read in Schwab_Stats data
+
+Schwab_Stats <- data.frame(column = c(Schwab_Stats[,]))
+
+Schwab_Stats <- Schwab_Stats %>%
+  mutate(key = rep(c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total"), n()/9), id = cumsum(key == "Position")) %>%
+  spread(key, column) # long to wide transformation; transpose every 9 rows of Memorial_Stats into a column
+
+Schwab_Stats <- subset(Schwab_Stats, select = -id)
+Schwab_Stats <- Schwab_Stats[, c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total")] # reorganize columns
+
+PGA_Fantasy <- read.csv("PGA_Fantasy.csv") # read in PGA_Fantasy data
+
+names(PGA_Fantasy) <- c("Player", "Salary", "FPTS", "Tournament", "Par") # change Name variable to Player
+
+PGA_Stats <- read.delim("PGA_Stats.txt") # read in PGA_Stats data
+
+PGA_Stats <- data.frame(column = c(PGA_Stats[,]))
+
+PGA_Stats <- PGA_Stats %>%
+  mutate(key = rep(c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total"), n()/9), id = cumsum(key == "Position")) %>% 
+  spread(key, column) # long to wide transformation; transpose every 9 rows of Memorial_Stats into a column
+
+PGA_Stats <- subset(PGA_Stats, select = -id)
+PGA_Stats <- PGA_Stats[, c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total")] # reorganize columns
+```
+
+#### Join Fantasy and Statistics to Create One Data Frame for Each of Three Tournaments
+```{r}
+Memorial <- full_join(Memorial_Stats, Memorial_Fantasy, by = "Player")
+
+PGA <- full_join(PGA_Stats, PGA_Fantasy, by = "Player")
+  
+Schwab <- full_join(Schwab_Stats, Schwab_Fantasy, by = "Player")
+```
+
+#### Combine the Three Tournament Data Frames to Final Data Frame 
+```{r}
+Mem_PGA_Sch <- rbind(Memorial, PGA, Schwab) # stack the 3 data frames together
+
+Mem_PGA_Sch <- Mem_PGA_Sch[complete.cases(Mem_PGA_Sch[1:9]),] %>% # removes 4 rows with NA
+  mutate(Score = ifelse(as.character(Score) == "E", 0, as.character(Score))) # replace score E with 0
+
+Mem_PGA_Sch <- Mem_PGA_Sch %>%
+  mutate(top10= if_else(grepl("^[1-9]$|10|^T[1-9]$|T10", Position),"Yes", "No")) # add top10 variable
+
+Mem_PGA_Sch <- Mem_PGA_Sch %>%
+  mutate(MadeCut = if_else(grepl("CUT", Position),"No","Yes")) # add MadeCut variable
+
+Temp_Mem_PGA_Sch <- Mem_PGA_Sch %>%
+  group_by(Player) %>%
+  select(Player, Score, Tournament)
+
+Temp_Mem_PGA_Sch <- pivot_wider(Temp_Mem_PGA_Sch, names_from = Tournament, values_from = Score)
+
+Temp_Mem_PGA_Sch <- Temp_Mem_PGA_Sch[, c("Player", "Charles Schwab", "Memorial", "PGA Championship")] # reorganize columns
+
+Mem_PGA_Sch <- Mem_PGA_Sch %>%
+  left_join(Temp_Mem_PGA_Sch, by = "Player")
+
+Mem_PGA_Sch <- Mem_PGA_Sch %>%
+  mutate(SalaryRange = case_when(grepl("6[0-9]{3}", Salary) ~ "6000s", grepl("7[0-9]{3}", Salary) ~ "7000s", grepl("8[0-9]{3}", Salary) ~ "8000s",grepl("9[0-9]{3}", Salary) ~ "9000s",grepl("1[0-9]{4}", Salary) ~ "10000s")) # add SalaryRange variable
+
+Mem_PGA_Sch <- Mem_PGA_Sch[, c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total", "Salary", "FPTS", "Tournament", "Par", "top10", "MadeCut", "SalaryRange", "Charles Schwab", "Memorial", "PGA Championship")] # reorganize columns
+```
