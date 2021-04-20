@@ -122,6 +122,12 @@ MadeCutJoin <-
   Top10Join%>%
   left_join(MadeCut, by = c("Player", "Position", "Tournament"))
 
+#SalaryRange variable 
+SalaryRange <-
+  Complete_M_P_S%>%
+  select(Player, Salary, Tournament)%>%
+  mutate(SalaryRange = case_when(grepl("6[0-9]{3}", Salary) ~ "6000s", grepl("7[0-9]{3}", Salary) ~ "7000s", grepl("8[0-9]{3}", Salary) ~ "8000s",grepl("9[0-9]{3}", Salary) ~ "9000s",grepl("1[0-9]{4}", Salary) ~ "10000s"))
+
 #this gets the 3 Variables of Memorial, Charles Schwab, PGA Championship
 PGA_M_CS_Score <-
   Complete_M_P_S %>%
@@ -135,6 +141,11 @@ PGA_M_CS_Score <-
 Join <-
   MadeCutJoin %>%
   left_join(PGA_M_CS_Score, by = "Player")
+
+#join with SalaryRange 
+Join <-
+  Join %>%
+  left_join(SalaryRange, by = c("Player", "Salary", "Tournament"))
 
 ```
 
