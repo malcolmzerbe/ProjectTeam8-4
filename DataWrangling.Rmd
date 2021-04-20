@@ -28,7 +28,6 @@ Memorial_Stats <- Memorial_Stats %>%
 Memorial_Stats <- subset(Memorial_Stats, select = -id)
 Memorial_Stats <- Memorial_Stats[, c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total")] # reorganize columns
 
-#Bring in Schwab Fantasy
 Schwab_Fantasy <- read.csv("Schwab_Fantasy.csv") # read in Schwab_Fantasy data
 
 names(Schwab_Fantasy) <- c("Player", "Salary", "FPTS", "Tournament", "Par") # change Name variable to Player
@@ -69,7 +68,7 @@ PGA <- full_join(PGA_Stats, PGA_Fantasy, by = "Player")
 Schwab <- full_join(Schwab_Stats, Schwab_Fantasy, by = "Player")
 ```
 
-#### Combine the Three Tournament Data Frames to Final Data Frame 
+#### Combine the Three Tournament Data Frames to Final Data Frame
 ```{r}
 Mem_PGA_Sch <- rbind(Memorial, PGA, Schwab) # stack the 3 data frames together
 
@@ -97,4 +96,33 @@ Mem_PGA_Sch <- Mem_PGA_Sch %>%
   mutate(SalaryRange = case_when(grepl("6[0-9]{3}", Salary) ~ "6000s", grepl("7[0-9]{3}", Salary) ~ "7000s", grepl("8[0-9]{3}", Salary) ~ "8000s",grepl("9[0-9]{3}", Salary) ~ "9000s",grepl("1[0-9]{4}", Salary) ~ "10000s")) # add SalaryRange variable
 
 Mem_PGA_Sch <- Mem_PGA_Sch[, c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total", "Salary", "FPTS", "Tournament", "Par", "top10", "MadeCut", "SalaryRange", "Charles Schwab", "Memorial", "PGA Championship")] # reorganize columns
+
+Temp_Mem_PGA_Sch_2 <- Mem_PGA_Sch %>%
+  select(Player, `Charles Schwab`, Memorial, `PGA Championship`) %>%
+  mutate(playedSchwab = gsub(pattern = "^-\\d{2}|^\\d{2}|^-\\d{1}|^\\d{1}|", replacement = "1", `Charles Schwab`)) %>%
+  mutate(playedMemorial = gsub(pattern = "^-\\d{2}|^\\d{2}|^-\\d{1}|^\\d{1}|", replacement = "1", Memorial)) %>%
+  mutate(playedPGA = gsub(pattern = "^-\\d{2}|^\\d{2}|^-\\d{1}|^\\d{1}|", replacement = "1", `PGA Championship`)) %>%
+  mutate(playedSchwab = as.numeric(playedSchwab)) %>%
+  mutate(playedMemorial = as.numeric(playedMemorial)) %>%
+  mutate(playedPGA = as.numeric(playedPGA)) %>%
+  rowwise() %>%
+  mutate(tournplayed = sum(playedSchwab, playedMemorial, playedPGA, na.rm = TRUE)) # create tournplayed variable
+
+Temp_Mem_PGA_Sch_2 <- subset(Temp_Mem_PGA_Sch_2, select = -c(playedSchwab, playedMemorial, playedPGA)) # delete extra columns
+
+
+# add tournplayed variable
 ```
+
+Mem_PGA_Sch <- Mem_PGA_Sch %>%
+  mutate(`Charles Schwab` = as.numeric(`Charles Schwab`)) %>%
+  mutate(Memorial = as.numeric(Memorial)) %>%
+  mutate(`PGA Championship` = as.numeric(`PGA Championship`)) %>%
+  rowwise() %>%
+  mutate(avg = sum(`Charles Schwab`, Memorial, `PGA Championship`, na.rm = TRUE)/tournplayed) # add avg variable
+  
+Mem_PGA_Sch$avg <- round(Mem_PGA_Sch$avg, digit = 1) # round avg to 1 decimal place
+
+mutate(tournplayed = if_else(grepl("-[0-9]|[0-9]", `Charles Schwab`), "Played", "Did not play")) %>%
+
+-[0-9][0-9]|[0-9][0-9]
