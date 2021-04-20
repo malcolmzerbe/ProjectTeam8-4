@@ -97,7 +97,6 @@ Mem_PGA_Sch <- Mem_PGA_Sch %>%
 
 Mem_PGA_Sch <- Mem_PGA_Sch[, c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total", "Salary", "FPTS", "Tournament", "Par", "top10", "MadeCut", "SalaryRange", "Charles Schwab", "Memorial", "PGA Championship")] # reorganize columns
 
-<<<<<<< HEAD
 Temp_Mem_PGA_Sch_2 <- Mem_PGA_Sch %>%
   select(Player, `Charles Schwab`, Memorial, `PGA Championship`) %>%
   mutate(playedSchwab = gsub(pattern = "^-\\d{2}|^\\d{2}|^-\\d{1}|^\\d{1}|", replacement = "1", `Charles Schwab`)) %>%
@@ -111,14 +110,11 @@ Temp_Mem_PGA_Sch_2 <- Mem_PGA_Sch %>%
 
 Temp_Mem_PGA_Sch_2 <- subset(Temp_Mem_PGA_Sch_2, select = -c(playedSchwab, playedMemorial, playedPGA)) # delete extra columns
 
+# join
+Mem_PGA_Sch <- Mem_PGA_Sch %>%
+  
 
 # add tournplayed variable
-=======
-Mem_PGA_Sch <-
-  Mem_PGA_Sch %>%
-  mutate(rank = if_else(grepl("^T",Position), gsub("^T", "",Position), gsub("CUT", "NA", Position))) #add rank variable 
-
->>>>>>> 82f3158bf9ef7740fde1364f8cf9b310ab47a330
 ```
 
 Mem_PGA_Sch <- Mem_PGA_Sch %>%
