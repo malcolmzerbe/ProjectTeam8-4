@@ -98,7 +98,7 @@ Mem_PGA_Sch <- Mem_PGA_Sch %>%
 Mem_PGA_Sch <- Mem_PGA_Sch[, c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total", "Salary", "FPTS", "Tournament", "Par", "top10", "MadeCut", "SalaryRange", "Charles Schwab", "Memorial", "PGA Championship")] # reorganize columns
 
 Temp_Mem_PGA_Sch_2 <- Mem_PGA_Sch %>%
-  select(Player, `Charles Schwab`, Memorial, `PGA Championship`) %>%
+  select(Position, Player, Tournament, `Charles Schwab`, Memorial, `PGA Championship`) %>%
   mutate(playedSchwab = gsub(pattern = "^-\\d{2}|^\\d{2}|^-\\d{1}|^\\d{1}|", replacement = "1", `Charles Schwab`)) %>%
   mutate(playedMemorial = gsub(pattern = "^-\\d{2}|^\\d{2}|^-\\d{1}|^\\d{1}|", replacement = "1", Memorial)) %>%
   mutate(playedPGA = gsub(pattern = "^-\\d{2}|^\\d{2}|^-\\d{1}|^\\d{1}|", replacement = "1", `PGA Championship`)) %>%
@@ -108,14 +108,13 @@ Temp_Mem_PGA_Sch_2 <- Mem_PGA_Sch %>%
   rowwise() %>%
   mutate(tournplayed = sum(playedSchwab, playedMemorial, playedPGA, na.rm = TRUE)) # create tournplayed variable
 
-Temp_Mem_PGA_Sch_2 <- subset(Temp_Mem_PGA_Sch_2, select = -c(playedSchwab, playedMemorial, playedPGA)) # delete extra columns
+Temp_Mem_PGA_Sch_2 <- subset(Temp_Mem_PGA_Sch_2, select = -c(`Charles Schwab`, Memorial, `PGA Championship`, playedSchwab, playedMemorial, playedPGA)) # delete extra columns
 
-# join
 Mem_PGA_Sch <- Mem_PGA_Sch %>%
-  
+  left_join(Temp_Mem_PGA_Sch_2, by = c("Position", "Player", "Tournament")) # add tournplayed variable
 
-# add tournplayed variable
-```
+Mem_PGA_Sch <- Mem_PGA_Sch %>%
+  relocate(tournplayed, .after = SalaryRange) # reorganize columns
 
 Mem_PGA_Sch <- Mem_PGA_Sch %>%
   mutate(`Charles Schwab` = as.numeric(`Charles Schwab`)) %>%
@@ -126,6 +125,10 @@ Mem_PGA_Sch <- Mem_PGA_Sch %>%
   
 Mem_PGA_Sch$avg <- round(Mem_PGA_Sch$avg, digit = 1) # round avg to 1 decimal place
 
-mutate(tournplayed = if_else(grepl("-[0-9]|[0-9]", `Charles Schwab`), "Played", "Did not play")) %>%
+Mem_PGA_Sch <-
+  Mem_PGA_Sch %>%
+  mutate(rank = if_else(grepl("^T",Position), gsub("^T", "",Position), gsub("CUT", "NA", Position))) # add rank variable
 
--[0-9][0-9]|[0-9][0-9]
+Mem_PGA_Sch <- Mem_PGA_Sch %>%
+  relocate(rank, .after = Par) # organize columns
+```
