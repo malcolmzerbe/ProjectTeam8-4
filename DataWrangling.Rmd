@@ -97,4 +97,9 @@ Mem_PGA_Sch <- Mem_PGA_Sch %>%
   mutate(SalaryRange = case_when(grepl("6[0-9]{3}", Salary) ~ "6000s", grepl("7[0-9]{3}", Salary) ~ "7000s", grepl("8[0-9]{3}", Salary) ~ "8000s",grepl("9[0-9]{3}", Salary) ~ "9000s",grepl("1[0-9]{4}", Salary) ~ "10000s")) # add SalaryRange variable
 
 Mem_PGA_Sch <- Mem_PGA_Sch[, c("Position", "Player", "Score", "Putt", "ARG", "App", "OTT", "T2G", "Total", "Salary", "FPTS", "Tournament", "Par", "top10", "MadeCut", "SalaryRange", "Charles Schwab", "Memorial", "PGA Championship")] # reorganize columns
+
+Mem_PGA_Sch <-
+  Mem_PGA_Sch %>%
+  mutate(rank = if_else(grepl("^T",Position), gsub("^T", "",Position), gsub("CUT", "NA", Position))) #add rank variable 
+
 ```
