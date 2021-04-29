@@ -69,6 +69,9 @@ Schwab <- full_join(Schwab_Stats, Schwab_Fantasy, by = "Player")
 ```
 
 #### Combine the Three Tournament Data Frames to Final Data Frame
+
+This last R chunk combines the 3 data frames above--Memorial, PGA and Schwab--while removing the 4 rows that are mainly filled with NA values and replacing the score E with 0. Next, we created the additional 9 variables by mutating the variables we already had. We created the top10 and MadeCut variables by using an if else statement to see if each grepl condition was met. To create the SalaryRange variable we used the function case_when. This allowed us to pick specific conditions and, if they were met, they were mutated to the desired range. For the rank variable we used an if else statement with a grepl condition. Depending if the statement was true or false, it went through a gsub where the values were changed to a number or NA. For the avg variable we made sure the Charles Schwab, PGA Championship and Memorial variables were numeric. By doing this, we were able to take the sum and divide it by the tournplayed variable to receive the average. For the tournplayed variable we used gsub for each of the 3 tournaments to replace it with a value of 1. Again, we made sure it was numeric so that we could add them up to get the total tournplayed. If an NA was present in the Charles Schwab, PGA Championship or Memorial variable, that player would not be credited for participating in that respective tournament. Lastly, throughout the code we rearranged the variables so that it would be in the same order as presented to us in the project description.
+
 ```{r}
 Mem_PGA_Sch <- rbind(Memorial, PGA, Schwab) # stack the 3 data frames together
 
@@ -129,6 +132,6 @@ Mem_PGA_Sch <-
   Mem_PGA_Sch %>%
   mutate(rank = if_else(grepl("^T",Position), gsub("^T", "",Position), gsub("CUT", "NA", Position))) # add rank variable
 
-Mem_PGA_Sch <- Mem_PGA_Sch %>%
+FinalDataFrame <- Mem_PGA_Sch %>%
   relocate(rank, .after = Par) # organize columns
 ```
