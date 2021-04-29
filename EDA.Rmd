@@ -1,0 +1,131 @@
+---
+title: "Stat 184 Project"
+author: "ProjectTeam8-4"
+date: "May 3, 2021"
+output: html_notebook 
+---
+
+#### Load Packages
+```{r message=FALSE}
+library(tidyverse) 
+```
+
+#### Read in Data and Convert Stat files to data frames
+```{r}
+Memfan <- read.csv("Memorial_Fantasy.csv", header = T)
+Pgafan <- read.csv("PGA_Fantasy.csv", header = T)
+Schfan <- read.csv("Schwab_Fantasy.csv", header = T)
+
+Memstat<- read.delim("Memorial_Stats.txt", header = T )
+Memstats <-  as.data.frame(matrix(Memstat$Data, ncol=9, byrow=TRUE))
+
+Pgastat<- read.delim("PGA_Stats.txt", header = T)
+Pgastats <-  as.data.frame(matrix(Pgastat$Data, ncol=9, byrow=TRUE))
+
+Schstat<- read.delim("Schwab_Stats.txt", header = T)
+Schstats <-  as.data.frame(matrix(Schstat$Data, ncol=9, byrow=TRUE))
+```
+
+#### Join Fantasy and Statistics to Create One Data Frame for Each of Three Tournaments
+
+```{r}
+Memorial <- Memstats %>%
+  inner_join(Memfan, by=c("V2"= "Name"))
+
+Pga <- Pgastats %>%
+  inner_join(Pgafan, by=c("V2"= "Name")) 
+
+
+Schwab <- Schstats %>%
+  inner_join(Schfan, by=c("V2"= "Name"))
+```
+
+#### Combine the Three Tournament Data Frames to Final Data Frame
+Include paragraph explaining what the R statements are "doing" and what you are trying to accomplish with these statements.
+
+```{r}
+All <- rbind(Memorial, Pga, Schwab)
+names(All)[1:9] <- c('Position', 'Player', 'Score', 
+                          'Putt', 'ARG', 'App', 'OTT', 'T2G', 'Total')
+
+All$Score <- fct_recode(All$Score, "0" = "E") 
+
+Top10 <- 
+  All %>%
+  group_by(Tournament) %>%
+  mutate(Score = as.numeric(as.character(factor(Score)))) %>%
+  mutate(rank = rank(Score, ties.method = "min")) %>%
+  mutate(top10 = if_else(rank <= 10, 'Yes', 'No')) %>%
+  mutate(MadeCut = if_else(Position =='CUT', 'No', 'Yes')) %>%
+  mutate(SalaryRange = ifelse(grepl("^6", Salary), "6000s",
+                       ifelse(grepl("^7", Salary), "7000s",
+                       ifelse(grepl("^8", Salary), "8000s",
+                       ifelse(grepl("^9" , Salary), "9000s",
+                       ifelse(grepl("^10", Salary), "10000s", "11000s"))))))
+
+TournPlayed <- All %>%
+  select((Player)) %>%
+  group_by(Player) %>%
+  mutate(tournplayed = n()) %>%
+  distinct()
+
+AvgScore <- All %>%
+    select(Player, Score, Tournament) %>%
+    mutate(Score = as.numeric(as.character(factor(Score)))) %>%
+    spread(Tournament, Score) %>%
+    mutate(avg = round(rowMeans(.[2:4], na.rm=TRUE), 1))
+
+Results_Player <- Top10 %>%
+  left_join(TournPlayed, by = "Player")
+
+AllResults <- Results_Player %>%
+  left_join(AvgScore, by = "Player")
+```
+
+#### Research Question One
+Is there a correlation between a player's rank and their fantasy points?
+```{r}
+#Scatter plot for fantasy points and rank
+ggplot(AllResults, aes(x=rank, y=FPTS)) + 
+  geom_point() +
+  scale_x_reverse()+
+  geom_smooth(method=lm)
+
+#Scatter plot with MadeCut
+ggplot(AllResults, aes(x=rank, y=FPTS, shape=MadeCut)) + 
+  geom_point() + 
+  scale_x_reverse()+
+  geom_smooth(method=lm)
+
+ggplot(AllResults)+
+  aes(x = rank, y = FPTS, colour = Tournament)+
+  geom_point(size=1L)+
+  xlab("Rank")+
+  ylab("Fantasy Points (FPTS)")+
+  scale_color_hue() +
+  theme_bw() +
+  facet_wrap(vars(MadeCut))
+
+ggplot(AllResults)+
+  aes(x = rank, y = FPTS)+
+  geom_point(size=1L)+
+  xlab("Rank")+
+  ylab("Fantasy Points (FPTS)")+
+  scale_color_hue() +
+  theme_bw() +
+  geom_smooth()+
+  facet_wrap(vars(MadeCut))
+```
+
+#### Research Question Two
+```{r}
+ggplot(AllResults)+
+  aes(x = top10, y = avg, fill = Tournament)+
+  geom_boxplot()+
+  xlab("Top10")+
+  ylab("Average Scores")+
+  scale_fill_hue()+
+  theme_bw()+
+  facet_wrap(vars(Tournament))
+```
+
