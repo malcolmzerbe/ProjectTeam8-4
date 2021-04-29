@@ -51,7 +51,6 @@ Schwab <- full_join(Schwab_Stats, Schwab_Fantasy, by = "Player")
 ```
 
 #### Combine the Three Tournament Data Frames to Final Data Frame
-This last R chunk combines the 3 data frames above, Memorial, PGA, and Schwab while removing the 4 rows that are mainly filled with 'NA' values and replacing the score E with 0. Next, we create the extra 9 variables by mutating the data we already have. We created the top10 and MadeCut variable by using an if else statement to see if each  grepl condition was met. To create the SalaryRange variable we used the function, case_when. This allowed us to pick specific conditions and if they were met, they were mutated to the desired range. For the rank variable we used an if else statement with a grepl condition. Depending if the statement was true or false, it went through a gsub  where the values were changed to a number or NA. For the avg variable we made sure the Charles Schwab, PGA Championship, and Memorial variables were numeric. By doing this, we were able to take the sum and divide it by the tournplayed variable to receive the average. For the tournplayed variable we used gsub for each of the 3 tournaments to replace it with a value of 1. Again, we made sure it was numeric so that we could add them up to get the total tournplayed if the value was not NA. Lastly, throughout the code we rearranged the variables so that it would be in the same order as presented to us in the project description. 
 ```{r}
 Mem_PGA_Sch <- rbind(Memorial, PGA, Schwab) # stack the 3 data frames together
 Mem_PGA_Sch <- Mem_PGA_Sch[complete.cases(Mem_PGA_Sch[1:9]),] %>% # removes 4 rows with NA
@@ -100,3 +99,21 @@ Mem_PGA_Sch <- Mem_PGA_Sch %>%
   relocate(rank, .after = Par) # organize columns
 ```
 
+#### Research Question One
+```{r}
+#Possible Research Questions
+  #1 What is the average rank of players whose salary range is between 6000 and 8000?
+  #2 How many players posted a score of -4 in the PGA Championship?
+  #3 What is the average T2G for the top 15 players in the Charles Schwab Cup?
+  #4 How many players Made the Cut that were not in the Top Ten?
+  #5 How many players Made the Cut with only 1 tournament played?
+  #6 What was the average score for the three tournaments of the top 10 ranked golfers?
+  #7 What was the average score for the three tournaments of golfers in ranks 40-50?
+  #8 Which tournament has the most number of golfers entered?
+  #9 What percent of golfers posted a final score of ±0 in the Memorial Tournament?
+  #10 What is the average salary of the top 10 ranked golfers? 
+```
+
+#### Reaserch Question Two
+```{r}
+```
