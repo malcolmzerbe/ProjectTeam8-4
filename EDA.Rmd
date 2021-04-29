@@ -83,8 +83,19 @@ AllResults <- Results_Player %>%
 ```
 
 #### Research Question One
+Is there a correlation between a player's rank and their fantasy points?
 ```{r}
+#Scatter plot for fantasy points and rank
+ggplot(AllResults, aes(x=rank, y=FPTS)) + 
+  geom_point() +
+  scale_x_reverse()+
+  geom_smooth(method=lm)
 
+#Scatter plot with MadeCut
+ggplot(AllResults, aes(x=rank, y=FPTS, shape=MadeCut)) + 
+  geom_point() + 
+  scale_x_reverse()+
+  geom_smooth(method=lm)
 ```
 
 #### Research Question Two
