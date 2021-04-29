@@ -135,3 +135,24 @@ Mem_PGA_Sch <-
 FinalDataFrame <- Mem_PGA_Sch %>%
   relocate(rank, .after = Par) # organize columns
 ```
+
+#### Research Question One
+```{r}
+#Possible Research Questions
+  #1  What is the distribution of salaries for the top 20 golfers?
+  #2  What is the distribution of scores for the top 10 ranked golfers?
+  #3  What is the correlation between the T2G and the rank of a player in the Charles Schwab Cup?
+  #4  Is there a correlation between a player’s rank and whether or not they made the cut?
+  #5  What is the distribution of players who Made the Cut with only 1 tournament played for all other players who Made the Cut?
+  #6  What are the top 10 golfers average scores for the three different tournaments?
+  #7  What was the average score for the three tournaments of golfers in ranks 40-50?
+  #8  Which tournament has the most number of golfers entered?
+  #9  What distribution of golfers posted a final score of ±0 in the Memorial Tournament?
+  #10 What are the salaries of the top 10 ranked golfers?  
+```
+
+#### Reaserch Question Two
+```{r}
+
+```
+
