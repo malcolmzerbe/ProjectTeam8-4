@@ -83,14 +83,54 @@ AllResults <- Results_Player %>%
 ```
 
 #### Research Question One
+<<<<<<< HEAD
 
+=======
+Is there a correlation between a player's rank and their fantasy points?
+>>>>>>> 3dced674bea6d5eb2fee4714cf7b8d369e88b786
 ```{r}
+#Scatter plot for fantasy points and rank
+ggplot(AllResults, aes(x=rank, y=FPTS)) + 
+  geom_point() +
+  scale_x_reverse()+
+  geom_smooth(method=lm)
 
+#Scatter plot with MadeCut
+ggplot(AllResults, aes(x=rank, y=FPTS, shape=MadeCut)) + 
+  geom_point() + 
+  scale_x_reverse()+
+  geom_smooth(method=lm)
+
+ggplot(AllResults)+
+  aes(x = rank, y = FPTS, colour = Tournament)+
+  geom_point(size=1L)+
+  xlab("Rank")+
+  ylab("Fantasy Points (FPTS)")+
+  scale_color_hue() +
+  theme_bw() +
+  facet_wrap(vars(MadeCut))
+
+ggplot(AllResults)+
+  aes(x = rank, y = FPTS)+
+  geom_point(size=1L)+
+  xlab("Rank")+
+  ylab("Fantasy Points (FPTS)")+
+  scale_color_hue() +
+  theme_bw() +
+  geom_smooth()+
+  facet_wrap(vars(MadeCut))
 ```
 
 #### Research Question Two
 
 ```{r}
-
+ggplot(AllResults)+
+  aes(x = top10, y = avg, fill = Tournament)+
+  geom_boxplot()+
+  xlab("Top10")+
+  ylab("Average Scores")+
+  scale_fill_hue()+
+  theme_bw()+
+  facet_wrap(vars(Tournament))
 ```
 
