@@ -70,6 +70,7 @@ AllResults <- Results_Player %>%
   left_join(AvgScore, by = "Player")
 ```
 
+<<<<<<< HEAD
 #### Research Questions 1
 Is there a correlation between a player's rank and the amount of fantasy points they have?
 
@@ -94,6 +95,7 @@ ggplot(Graph2)+
 What are the average scores for the top 10 players in each tournament?
 
 To answer this question we chose to use a box plot. These graphs showed us that players not in the top ten had roughly the same average score in all three tournaments. Players who made the top 10 had more spread between the three tournaments in regards to average score. These graphs also show us that players in the top 10 had their best scores in the Charles Schwab Tournament, followed by the PGA Championship, then the Memorial Tournament. The PGA Championship had the most outliers in the positive direction so this suggests that more players played a worse round of golf than usual at the PGA ChAmpionship. The three graphs showed that there is a distinct difference between the average scores of golfers in the top 10 and those not in the top 10. The graphs also showed that both top 10 and not top 10 golfers hit about the score not matter what course they play on. 
+
 ```{r}
 ggplot(AllResults)+
   aes(x = top10, y = avg, fill = Tournament)+
