@@ -70,8 +70,8 @@ AllResults <- Results_Player %>%
   left_join(AvgScore, by = "Player")
 ```
 
-<<<<<<< HEAD
-#### Research Questions 1
+
+#### Research Question 1
 Is there a correlation between a player's rank and the amount of fantasy points they have?
 
 To answer this question we used a scatter plot to determine if there is a correlation between rank and fantasy points. Our graph shows that for players who made the cut, there is a strong positive correlation between a player's rank and earning more fantasy points. For players that did not make the cut there is a positive correlation between their rank and the amount of fantasy points they acquire. What these graph show is that players with higher ranks tend to earn more fantasy points. The highest ranked players (those in the top 10) earn significantly more fantasy points than those players in the middle of the pack. These graphs also suggest that players earn more fantasy points in the Charles Schwab and PGA Championship compared to the Memorial tournament. 
