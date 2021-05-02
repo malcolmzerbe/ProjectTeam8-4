@@ -72,7 +72,7 @@ AllResults <- Results_Player %>%
 
 
 #### Research Question 1
-Is there a correlation between a player's rank and the amount of fantasy points they have?
+Based on whether or not a player made the cut, is there a correlation between a players rank and the amount of fantasy points earned? 
 
 To answer this question we used a scatter plot to determine if there is a correlation between rank and fantasy points. Our graph shows that for players who made the cut, there is a strong positive correlation between a player's rank and earning more fantasy points. For players that did not make the cut there is a positive correlation between their rank and the amount of fantasy points they acquire. What these graph show is that players with higher ranks tend to earn more fantasy points. The highest ranked players (those in the top 10) earn significantly more fantasy points than those players in the middle of the pack. These graphs also suggest that players earn more fantasy points in the Charles Schwab and PGA Championship compared to the Memorial tournament. 
 ```{r}
@@ -92,7 +92,7 @@ ggplot(Graph2)+
 ```
 
 #### Research Question 2
-What are the average scores for the top 10 players in each tournament?
+What is the relationship in each tournament between the average scores of the players who were in the top 10 and not in the top 10 ?
 
 To answer this question we chose to use a box plot. These graphs showed us that players not in the top ten had roughly the same average score in all three tournaments. Players who made the top 10 had more spread between the three tournaments in regards to average score. These graphs also show us that players in the top 10 had their best scores in the Charles Schwab Tournament, followed by the PGA Championship, then the Memorial Tournament. The PGA Championship had the most outliers in the positive direction so this suggests that more players played a worse round of golf than usual at the PGA ChAmpionship. The three graphs showed that there is a distinct difference between the average scores of golfers in the top 10 and those not in the top 10. The graphs also showed that both top 10 and not top 10 golfers hit about the score not matter what course they play on. 
 
