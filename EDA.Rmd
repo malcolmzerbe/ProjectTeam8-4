@@ -1,5 +1,5 @@
 ---
-title: "Stat 184 Project"
+title: "STAT 184 Project"
 author: "ProjectTeam8-4"
 date: "May 3, 2021"
 output: html_notebook 
@@ -7,7 +7,7 @@ output: html_notebook
 
 #### Load Packages
 ```{r message=FALSE}
-library(tidyverse) 
+library(tidyverse)
 ```
 
 #### Read in Data and Convert Stat files to data frames
@@ -70,8 +70,7 @@ AllResults <- Results_Player %>%
   left_join(AvgScore, by = "Player")
 ```
 
-
-#### Research Question 1
+#### Research Question One
 
 Depending on whether a player made the cut or not, is there a correlation between a player's rank in a tournament and the amount of fantasy points they generate in that same tournament?
 
@@ -90,22 +89,23 @@ ggplot(RQ1)+
   theme_bw() +
   facet_wrap(vars(MadeCut))
 ```
-To answer this question, we used a scatter plot to determine if there was a correlation between a player's rank and the amount of fantasy points they generated. The players who are best are ranked higher, for example the player ranked number one is the highest ranked player. As depicted in the graph, among players who made the cut, there is a very strong, positive correlation between the player's rank and the amount of fantasy points they acquired. This positive correlation between rank and fantasy points is also reflected among players who did not make the cut. This suggests that, regardless of whether a player made the cut or not, a higher rank correlates to more fantasy points. The best ranked players, such as those in the Top 10, earn significantly more fantasy points than those players in the middle of the pack. These graphs also suggest that player's typically gained more fantasy points in the Charles Schwab and PGA Championship tournaments than in the Memorial tournament. All in all, a higher rank correlates strongly to generating more fantasy points.
+To answer this question, we used a scatter plot to determine if there was a correlation between a player's rank and the amount of fantasy points they generated. The best players are ranked higher. For example, the player ranked number one is the highest ranked player. As depicted in the graph, among players who made the cut, there is a very strong, positive correlation between a player's rank and the amount of fantasy points they acquired. This positive correlation between rank and fantasy points is also reflected among players who did not make the cut. This suggests that, regardless of whether a player made the cut or not, a higher rank correlates to more fantasy points. The best ranked players, such as those in the Top 10, earn significantly more fantasy points than those players in the middle of the pack. These graphs also suggest that player's typically gained more fantasy points in the Charles Schwab and PGA Championship tournaments than in the Memorial tournament. All in all, a higher rank correlates strongly to generating more fantasy points.
 
-#### Research Question 2
+#### Research Question Two
 
-What is the relationship in each tournament between the average scores of the players who were in the Top 10 and the average scores of the players not in the Top 10?
+What is the relationship in each tournament between the scores of the players who were in the Top 10 and the scores of the players not in the Top 10?
 
 ```{r}
 ggplot(AllResults)+
-  aes(x = top10, y = avg, fill = Tournament) +
-  geom_boxplot()+
+  aes(x = top10, y = Score, fill = Tournament) +
+  geom_boxplot() +
   xlab("Top 10 in Tournament") +
-  ylab("Average Scores") +
+  ylab("Scores in Tournament") +
   scale_fill_hue() +
   theme_bw() +
   facet_wrap(vars(Tournament))
 ```
-To answer this question we chose to use a box plot. These graphs showed us that players not within the Top 10 had roughly the same average score of between 0 and 5 in all three tournaments (Charles Schwab, Memorial and PGA Championship). The average score among those in the Top 10 differed more heavily depending on the tournament. The averages among the Top 10 in these three tournaments is less consistent than the averages among those not in the Top 10 in these same tournaments. These graphs also show us that players in the Top 10 had the best (lowest) average scores in the Charles Schwab Tournament, followed by the PGA Championship and then the Memorial Tournament. Additionally, the Memorial Tournament featured the smallest disparity between average score within the Top 10 and not within the Top 10. The PGA Championship had the most outliers in the positive direction, suggesting that a greater number of players performed unusually bad compared to the rest of the competitors at the PGA Championship. As expected, the graphs depict a clear difference in average score between golfers in the Top 10 and golfers not in the Top 10, with those in the Top 10 earning better scores.
+To answer this question we chose to use a box plot. As expected, the scores of players who were in the Top 10 were much lower (better) than the scores of players who were not in the Top 10 for all three tournaments--Charles Schwab, Memorial and PGA Championship. The median scores of players who were not in the Top 10 were roughly between 0 and 6. Players not within the Top 10 performed the best in terms of score within the Charles Schwab tournament, followed by the PGA Championship and then the Memorial. All three tournaments had an at least one outlier in the positive direction among players who did not make the Top 10, showing players who performed especially poor in terms of score within that tournament. Amongst players in the Top 10, golfers once again achieved their best scores in the Charles Schwab tournament, followed by the PGA Championship and then the Memorial. While the Memorial tournament held the worst/highest scores for both players in and out of the Top 10, this tournament also had the smallest spread and deviation between these two groups. The only outlier among players in the Top 10 occurred in the PGA Championship, representing a player who performed incredibly well relative to his competition at the tournament. Overall, the scores of players who were in Top 10 were higher than the scores of players who were not in the Top 10 for all three tournaments, and players typically performed the best in terms of score at the Charles Schwab Tournament which had the lowest/best median score for players in both the Top 10 and not in the Top 10 (as well as the lowest/best score overall and the lowest/best maximum score).
+
 
  
